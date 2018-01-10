@@ -70,3 +70,10 @@
       args:
         creates: /etc/kubernetes/admin.conf
       register: kube-init
+
+- hosts: all:!stage1
+  tasks:
+    - name: execute kube-join on slaves
+      command: "/vagrant/provision/kube-join-slave.sh"
+      args:
+        creates: /etc/kubernetes/pki/ca.crt
