@@ -12,6 +12,10 @@
        - docker-ce
        - avahi-daemon
        - libnss-mdns
+       - kubeadm
+       - kubelet
+       - kubectl
+       - kubernetes-cni
   tasks:
      - name: Force ipv4 for apt-get
        copy: content="Acquire::ForceIPv4 \"true\";" dest="/etc/apt/apt.conf.d/99force-ipv4"
@@ -63,7 +67,7 @@
          src: files/10-kubeadm.conf
          dest: /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
 
-- hosts: stage1
+- hosts: master
   tasks:
     - name: execute kube-init-master.sh
       command: "/vagrant/provision/kube-init-master.sh {{hostvars[inventory_hostname].private_ip}}"
@@ -71,7 +75,7 @@
         creates: /etc/kubernetes/admin.conf
       register: kube-init
 
-- hosts: all:!stage1
+- hosts: all:!master
   tasks:
     - name: execute kube-join on slaves
       command: "/vagrant/provision/kube-join-slave.sh"

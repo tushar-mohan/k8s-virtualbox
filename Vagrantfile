@@ -1,3 +1,17 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+
+NUM_SLAVES=2
+# master IP becomes: 192.168.56.100
+PRIVATE_SUBNET="192.168.56"
+IP_BASE=100
+MASTER_IP="#{PRIVATE_SUBNET}.#{IP_BASE}"
+# master uses SSH_PORT_BASE, and the slaves use ports counting from that
+SSH_PORT_BASE=5622
+
+puts "Creating k8s cluster with 1 master and #{NUM_SLAVES} slaves"
+puts "IP addresses will be #{MASTER_IP} onwards"
+
 Vagrant.configure("2") do |config|
 
   config.vm.box = "ubuntu/xenial64"
@@ -9,40 +23,32 @@ Vagrant.configure("2") do |config|
     ansible.playbook = 'provision/kubernetes.yml'
     ansible.sudo = true
     ansible.host_vars = {
-      "stage1" => {"private_ip" => "192.168.56.101"}
+      "master" => {"private_ip" => MASTER_IP}
     }
   end
 
-  config.vm.define "stage1", primary: true do |stage1|
-    stage1.vm.hostname = 'stage1'
-    stage1.vm.network :private_network, ip: "192.168.56.101"
-    stage1.vm.network :forwarded_port, guest: 22, host: 10122, id: "ssh"
-    stage1.vm.provider :virtualbox do |v|
+  config.vm.define "master", primary: true do |master|
+    master.vm.hostname = 'master'
+    master.vm.network :private_network, ip: MASTER_IP
+    master.vm.network :forwarded_port, guest: 22, host: SSH_PORT_BASE, id: "ssh"
+    master.vm.provider :virtualbox do |v|
       v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
       v.customize ["modifyvm", :id, "--memory", 1024]
-      v.customize ["modifyvm", :id, "--name", "stage1"]
+      v.customize ["modifyvm", :id, "--name", "master"]
     end
   end
 
-  config.vm.define "stage2" do |stage2|
-    stage2.vm.hostname = 'stage2'
-    stage2.vm.network :private_network, ip: "192.168.56.102"
-    stage2.vm.network :forwarded_port, guest: 22, host: 10222, id: "ssh"
-    stage2.vm.provider :virtualbox do |v|
-      v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
-      v.customize ["modifyvm", :id, "--memory", 1024]
-      v.customize ["modifyvm", :id, "--name", "stage2"]
-    end
-  end
-
-  config.vm.define "stage3", autostart: false do |stage3|
-    stage3.vm.hostname = 'stage3'
-    stage3.vm.network :private_network, ip: "192.168.56.103"
-    stage3.vm.network :forwarded_port, guest: 22, host: 10322, id: "ssh"
-    stage3.vm.provider :virtualbox do |v|
-      v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
-      v.customize ["modifyvm", :id, "--memory", 1024]
-      v.customize ["modifyvm", :id, "--name", "stage3"]
+  (1..NUM_SLAVES).each do |i|
+    hostname="node-#{i}"
+    config.vm.define hostname do |node|
+      node.vm.hostname = hostname
+      node.vm.network :private_network, ip: "#{PRIVATE_SUBNET}.#{i+IP_BASE}"
+      node.vm.network :forwarded_port, guest: 22, host: (SSH_PORT_BASE+i), id: "ssh"
+      node.vm.provider :virtualbox do |v|
+        v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
+        v.customize ["modifyvm", :id, "--memory", 1024]
+        v.customize ["modifyvm", :id, "--name", hostname]
+      end
     end
   end
 end
