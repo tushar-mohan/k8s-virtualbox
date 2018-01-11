@@ -9,8 +9,8 @@ MASTER_IP="#{PRIVATE_SUBNET}.#{IP_BASE}"
 # master uses SSH_PORT_BASE, and the slaves use ports counting from that
 SSH_PORT_BASE=5622
 
-puts "Creating k8s cluster with 1 master and #{NUM_SLAVES} slaves"
-puts "IP addresses will be #{MASTER_IP} onwards"
+puts "k8s cluster: 1 master, #{NUM_SLAVES} slaves"
+puts "IP addresses: #{MASTER_IP},.."
 
 Vagrant.configure("2") do |config|
 
