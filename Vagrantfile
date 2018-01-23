@@ -21,7 +21,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.provision "ansible" do |ansible|
     ansible.playbook = 'provision/kubernetes.yml'
-    ansible.sudo = true
+    ansible.become = true
     ansible.host_vars = {
       "master" => {"private_ip" => MASTER_IP}
     }
