@@ -15,7 +15,7 @@ post_up_msg = <<-MSG
     ------------------------------------------------------
     k8s cluster: master #{MASTER_IP}, #{NUM_SLAVES} slaves
     master: vagrant ssh master
-    slaves are called node-0,...
+    slaves are called node-1,...
     
     To use cluster:
     
@@ -35,7 +35,7 @@ Vagrant.configure("2") do |config|
   SHELL
 
   config.vm.provision "ansible" do |ansible|
-    ansible.playbook = 'provision/kubernetes.yml'
+    ansible.playbook = 'kubernetes.yml'
     ansible.become = true
     ansible.host_vars = {
       "master" => {"private_ip" => MASTER_IP}

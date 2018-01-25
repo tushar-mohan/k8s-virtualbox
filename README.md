@@ -27,7 +27,7 @@ Here is the sample output once provisioning is completed and the cluster is up:
 ==> master:     ------------------------------------------------------
 ==> master:     k8s cluster: master 192.168.56.100, 3 slaves
 ==> master:     master: vagrant ssh master
-==> master:     slaves are called node-0,...
+==> master:     slaves are called node-1,...
 ==> master:     
 ==> master:     To use cluster:
 ==> master:     

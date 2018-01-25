@@ -62,15 +62,10 @@
          line: search local
          state: present
 
-     - name: patch kubelet service
-       copy:
-         src: files/10-kubeadm.conf
-         dest: /etc/systemd/system/kubelet.service.d/10-kubeadm.conf
-
 - hosts: master
   tasks:
     - name: execute kube-init-master.sh
-      command: "/vagrant/provision/kube-init-master.sh {{hostvars[inventory_hostname].private_ip}}"
+      command: "/vagrant/kube-init-master.sh {{hostvars[inventory_hostname].private_ip}}"
       args:
         creates: /etc/kubernetes/admin.conf
       register: kube-init
@@ -78,6 +73,6 @@
 - hosts: all:!master
   tasks:
     - name: execute kube-join on slaves
-      command: "/vagrant/provision/kube-join-slave.sh"
+      command: "/vagrant/kube-join-slave.sh"
       args:
         creates: /etc/kubernetes/pki/ca.crt
