@@ -16,3 +16,11 @@ esac
 
 systemctl restart kubelet.service
 
+subnet=$(grep -Po "\d+.\d+.\d+.\d+:6443" /vagrant/kube-init-master.out | cut -f1 -d:|cut -f1-3 -d.)
+iface=$(/sbin/ip ro | grep $subnet| awk '{print $3'})
+cat > /etc/rc.local <<EOF
+#!/bin/sh -e
+/sbin/ip ro add 10.96.0.0/12 dev $iface
+EOF
+chmod +x /etc/rc.local
+/etc/rc.local

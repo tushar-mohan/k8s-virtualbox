@@ -28,3 +28,19 @@ while ! eval $INIT_CMD ; do
 done
 systemctl restart kubelet.service
 cp /etc/kubernetes/admin.conf $KUBE_CONFIG
+
+# add route to kube-dns via our private network
+iface=$(/sbin/ip ro| grep $node_ip|awk '{print $3}'); echo "private interface: $iface"
+cat > /etc/rc.local <<EOF
+#!/bin/sh -e
+/sbin/ip ro add 10.96.0.0/12 dev $iface
+EOF
+chmod +x /etc/rc.local
+/etc/rc.local
+
+# create flannel script
+cat > /vagrant/flannel.sh <<EOF
+#!/bin/sh
+curl -sL https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml |sed "/kube-subnet-mgr/a\        - --iface=$iface" | KUBECONFIG=kube.config kubectl apply -f -
+EOF
+chmod +x /vagrant/flannel.sh

@@ -2,3 +2,4 @@
 *.log
 .vagrant
 kube.config
+flannel.sh
