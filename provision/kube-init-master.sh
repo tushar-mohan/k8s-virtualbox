@@ -6,6 +6,7 @@
 outfile="/vagrant/kube-init-master.out"
 
 KUBE_CONFIG=/vagrant/kube.config
+FLANNEL_SCRIPT=/vagrant/flannel.sh
 
 exec > $outfile 2>&1
 
@@ -18,7 +19,7 @@ node_ip=${1:?"Node IP not set for master. Please set it and try again"}
 
 INIT_CMD="kubeadm init --apiserver-advertise-address=$node_ip --pod-network-cidr=10.244.0.0/16"
 
-rm -f $KUBE_CONFIG
+rm -f $KUBE_CONFIG $FLANNEL_SCRIPT
 systemctl daemon-reload
 echo $INIT_CMD
 while ! eval $INIT_CMD ; do
@@ -39,8 +40,8 @@ chmod +x /etc/rc.local
 /etc/rc.local
 
 # create flannel script
-cat > /vagrant/flannel.sh <<EOF
+cat > $FLANNEL_SCRIPT <<EOF
 #!/bin/sh
 curl -sL https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml |sed "/kube-subnet-mgr/a\        - --iface=$iface" | KUBECONFIG=kube.config kubectl apply -f -
 EOF
-chmod +x /vagrant/flannel.sh
+chmod +x $FLANNEL_SCRIPT
