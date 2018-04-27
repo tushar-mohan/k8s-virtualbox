@@ -6,7 +6,7 @@ while [ ! -f /vagrant/kube.config ]; do
 done
 
 
-token_cmd=$(grep -o "kubeadm join" /vagrant/kube-init-master.out)
+token_cmd=$(grep -o "kubeadm join.*" /vagrant/kube-init-master.out)
 echo $token_cmd
 case $token_cmd in
     *--token*) eval $token_cmd
