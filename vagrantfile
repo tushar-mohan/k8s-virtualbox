@@ -8,6 +8,7 @@ NUM_SLAVES=(ENV['NUM_SLAVES'] || 2).to_i()
 SUBNET=(ENV['SUBNET'] || "192.168.56")
 IP_BASE=100
 MASTER_IP="#{SUBNET}.#{IP_BASE}"
+NODE_MEMORY=(ENV['NODE_MEMORY'] || 1024).to_i()
 # master uses SSH_PORT_BASE, and the slaves use ports counting from that
 SSH_PORT_BASE=5622
 
@@ -62,7 +63,7 @@ Vagrant.configure("2") do |config|
       node.vm.network :forwarded_port, guest: 22, host: (SSH_PORT_BASE+i), id: "ssh"
       node.vm.provider :virtualbox do |v|
         v.customize ["modifyvm", :id, "--natdnshostresolver1", "on"]
-        v.customize ["modifyvm", :id, "--memory", 1024]
+        v.customize ["modifyvm", :id, "--memory", NODE_MEMORY]
         v.customize ["modifyvm", :id, "--name", hostname]
       end
     end

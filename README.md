@@ -44,3 +44,10 @@ Once the machines are booted and configured, two files will be created:
 
 As outlined, you simply set `KUBECONFIG` and start using `kubectl`.
 `flannel.sh` is a helper script created to setup `flannel`.
+
+## Environment Variables
+The scripts honor:
+
+  * `NUM_SLAVES`: number of slave nodes
+  * `NODE_MEMORY`: memory of slave nodes (not master) in MB
+  * `SUBNET`: defaults to 192.168.56.0/24
