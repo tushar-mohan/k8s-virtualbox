@@ -35,7 +35,7 @@
 
      - name: Add Google Cloud apt key
        apt_key:
-         id: A7317B0F
+         id: BA07F4FB
          url: https://packages.cloud.google.com/apt/doc/apt-key.gpg
          state: present
 

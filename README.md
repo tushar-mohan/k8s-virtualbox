@@ -49,5 +49,5 @@ As outlined, you simply set `KUBECONFIG` and start using `kubectl`.
 The scripts honor:
 
   * `NUM_SLAVES`: number of slave nodes
-  * `NODE_MEMORY`: memory of slave nodes (not master) in MB
+  * `NODE_MEMORY`: memory of slave nodes (not master) in MB. Defaults to 1024.
   * `SUBNET`: defaults to 192.168.56.0/24

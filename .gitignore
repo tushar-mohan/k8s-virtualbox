@@ -3,3 +3,4 @@
 .vagrant
 kube.config
 flannel.sh
+data
