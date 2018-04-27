@@ -4,3 +4,4 @@
 kube.config
 flannel.sh
 data
+*.retry
