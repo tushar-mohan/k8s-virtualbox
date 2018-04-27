@@ -36,6 +36,9 @@ Here is the sample output once provisioning is completed and the cluster is up:
 ==> master:     
 ==> master:     To set up flannel:
 ==> master:     $ ./flannel.sh
+==> master:     
+==> master:     Shared directory:
+==> master:     /vagrant/data on all nodes => ./data (from this host)
 ==> master:     ------------------------------------------------------
 ```
 

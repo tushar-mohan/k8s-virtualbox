@@ -25,6 +25,9 @@ post_up_msg = <<-MSG
     
     To set up flannel:
     $ ./flannel.sh
+
+    Shared directory:
+    /vagrant/data on all nodes => ./data (from this host)
     ------------------------------------------------------
 MSG
 
