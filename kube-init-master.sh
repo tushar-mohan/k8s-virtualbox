@@ -20,6 +20,12 @@ node_ip=${1:?"Node IP not set for master. Please set it and try again"}
 INIT_CMD="kubeadm init --apiserver-advertise-address=$node_ip --pod-network-cidr=10.244.0.0/16"
 
 rm -f $KUBE_CONFIG $FLANNEL_SCRIPT
+
+# make sure the kubelet uses the correct interface
+cat > /etc/default/kubelet <<EOF
+KUBELET_EXTRA_ARGS="--node-ip=$node_ip"
+EOF
+
 systemctl daemon-reload
 echo $INIT_CMD
 while ! eval $INIT_CMD ; do
