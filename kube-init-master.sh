@@ -41,6 +41,7 @@ iface=$(/sbin/ip ro| grep $node_ip|awk '{print $3}'); echo "private interface: $
 cat > /etc/rc.local <<EOF
 #!/bin/sh -e
 /sbin/ip ro add 10.96.0.0/12 dev $iface
+[ ! -x /vagrant/onboot.sh ] || exec /vagrant/onboot.sh
 EOF
 chmod +x /etc/rc.local
 /etc/rc.local

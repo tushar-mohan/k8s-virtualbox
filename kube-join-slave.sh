@@ -27,6 +27,7 @@ systemctl restart kubelet.service
 cat > /etc/rc.local <<EOF
 #!/bin/sh -e
 /sbin/ip ro add 10.96.0.0/12 dev $iface
+[ ! -x /vagrant/onboot.sh ] || exec /vagrant/onboot.sh
 EOF
 chmod +x /etc/rc.local
 /etc/rc.local
